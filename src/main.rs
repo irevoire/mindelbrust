@@ -28,12 +28,14 @@ fn main() -> ! {
         Task::spawn(world.run(Duration::from_secs(1))).detach();
 
         while let Some(stream) = incoming.next().await {
+            println!("Go a new connection");
             let mut stream = Arc::new(stream.unwrap());
             let reader = futures::io::BufReader::new(stream.clone());
             let writer = futures::io::BufWriter::new(stream.clone());
             let player = Player::new(reader, writer, server_description.clone(), world).await;
             let player = match player {
                 Err(_) => {
+                    println!("It was not a minecraft client");
                     let _ = stream
                         .write(
                             br#"HTTP/1.1 200 OK
@@ -48,6 +50,7 @@ You should connect with a minecraft client
                 Ok(None) => continue, // ping
                 Ok(Some(player)) => player,
             };
+            println!("A new player joined the server");
 
             Task::spawn(async move {
                 world.add_player(player).await;
