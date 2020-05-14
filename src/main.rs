@@ -22,7 +22,7 @@ fn main() -> ! {
     server_description.description = "Rusty Minecraft Server".to_string();
     server_description.icon = std::fs::read("./icon.png").ok();
 
-    let listener = Async::<TcpListener>::bind("127.0.0.1:8080").unwrap();
+    let listener = Async::<TcpListener>::bind("0.0.0.0:8080").unwrap();
     let mut incoming = listener.incoming();
     smol::run(async move {
         Task::spawn(world.run(Duration::from_secs(1))).detach();
