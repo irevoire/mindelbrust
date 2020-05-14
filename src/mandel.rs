@@ -64,9 +64,9 @@ const BLOCKS: [Block; 60] = [
 ];
 
 pub fn compute(x: i32, y: i32) -> Block {
-    let (x1, y1) = (-0.909, -0.275);
+    let (x1, y1) = (-0.925, 0.266);
     let max_iter = BLOCKS.len();
-    let zoom = 10000.;
+    let zoom = 300.;
 
     let c_r = x as f64 / zoom + x1;
     let c_i = y as f64 / zoom + y1;
