@@ -31,13 +31,15 @@ fn main() -> ! {
             let stream = Arc::new(stream.unwrap());
             let reader = futures::io::BufReader::new(stream.clone());
             let writer = futures::io::BufWriter::new(stream.clone());
-            let player = Player::new(reader, writer, server_description.clone(), world)
-                .await
-                .unwrap();
-            if player.is_none() {
-                continue;
-            }
-            let player = player.unwrap();
+            let player = Player::new(reader, writer, server_description.clone(), world).await;
+            let player = match player {
+                Err(e) => {
+                    eprintln!("Could not create player: {}", e);
+                    continue;
+                }
+                Ok(None) => continue, // ping
+                Ok(Some(player)) => player,
+            };
 
             Task::spawn(async move {
                 world.add_player(player).await;
